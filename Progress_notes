@@ -17,4 +17,8 @@ Then I prepared the diamond database
 ```
 module load diamond/2.1.16
 gunzip e7.proteins.fa.gz
+
+diamond makedb \
+  --in e7.proteins.fa \
+  -d eggnog7_proteins
 ```
