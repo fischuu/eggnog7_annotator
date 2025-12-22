@@ -76,5 +76,55 @@ sort -t $'\t' -k1,1n --buffer-size=100G   --temporary-directory=$LOCAL_SCRATCH  
 
 # Now join (tab-separated)
 join -t $'\t' -1 3 -2 1 e7.og_info_kegg_go_long_sorted.tsv e7.taxid_info_sorted.tsv > e7.og_info_kegg_go_long_sorted_with_tax.tsv
+```
+
+After the join, I will assign numeric hashed instead of protein names
 
 ```
+import pandas as pd
+import hashlib
+
+# -------------------------
+# 1️⃣ Load the long OG TSV
+# -------------------------
+og_file = "e7.og_info_kegg_go_long_sorted.tsv"
+og_long = pd.read_csv(og_file, sep="\t", low_memory=False)
+
+# Adjust column names if needed
+# Suppose columns: og_id, id2, taxid_old, protein
+og_long.columns = ["og_id", "id2", "taxid_old", "protein"]
+
+# -------------------------
+# 2️⃣ Define hash function
+# -------------------------
+def hash_protein(name):
+    # Use md5, take first 16 hex digits → 64-bit integer
+    h = hashlib.md5(name.encode("utf-8")).hexdigest()
+    return int(h[:16], 16)
+
+# -------------------------
+# 3️⃣ Add protein_hash column to TSV
+# -------------------------
+og_long["protein_hash"] = og_long["protein"].apply(hash_protein)
+
+# Save the updated TSV
+og_long.to_csv("e7.og_info_kegg_go_long_hashed.tsv", sep="\t", index=False)
+
+# -------------------------
+# 4️⃣ Process FASTA file
+# -------------------------
+fasta_file = "e7.proteins.faa"
+hashed_fasta = "e7.proteins_hashed.faa"
+
+with open(fasta_file) as fin, open(hashed_fasta, "w") as fout:
+    for line in fin:
+        if line.startswith(">"):
+            prot_name = line[1:].strip().split()[0]  # remove >, take first token
+            prot_hash = hash_protein(prot_name)
+            fout.write(f">{prot_hash}\n")
+        else:
+            fout.write(line)
+
+```
+
+This will later allow to search much faster.
