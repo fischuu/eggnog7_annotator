@@ -60,25 +60,26 @@ The new file `e7.og_info_kegg_go_long.tsv` has 121,478,035 rows and the followin
 8. KEGG KO symbols
 9. GO slim terms
 
+# 2025-12-23
+
 Next I merge in the taxonomic information, assuming that we have the old taxonomic id in column 3
-
 ```
-# First, sort both files on the join columns
-# e7.og_info_kegg_go_long.tsv: join on column 3
-# e7.taxid_info.tsv: join on column 1 (Old_Taxid)
-
-# I do that on a quick, local ssd
-
-# extract the key column and sort
-sort -t $'\t' -k3,3n --buffer-size=100G   --temporary-directory=$LOCAL_SCRATCH   e7.og_info_kegg_go_long.tsv > e7.og_info_kegg_go_long_sorted.tsv
-
-sort -t $'\t' -k1,1n --buffer-size=100G   --temporary-directory=$LOCAL_SCRATCH   e7.taxid_info.tsv > e7.taxid_info_sorted.tsv
-
-# Now join (tab-separated)
-join -t $'\t' -1 3 -2 1 e7.og_info_kegg_go_long_sorted.tsv e7.taxid_info_sorted.tsv > e7.og_info_kegg_go_long_sorted_with_tax.tsv
-```
-
-After the join, I will assign numeric hashed instead of protein names
+awk -F'\t' '
+NR==FNR {
+    if ($1 !~ /^#/) {
+        tax[$1] = $3 "\t" $4 "\t" $5 "\t" $6
+    }
+    next
+}
+{
+    if ($3 in tax) {
+        print $0 "\t" tax[$3]
+    } else {
+        print $0 "\tNA\tNA"
+    }
+}
+' e7.taxid_info.tsv e7.og_info_kegg_go_long.tsv > e7.og_info_with_taxa.tsv
+```After the join, I will assign numeric hashed instead of protein names
 
 ```
 import pandas as pd
