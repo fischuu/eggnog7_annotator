@@ -103,6 +103,8 @@ diamond blastp \
 And then I'll merge it with my master table
 
 ```
+gzip e7.og_info_with_taxa.tsv
+
 awk -F'\t' -v OFS='\t' '
 NR==FNR {
     # og_taxa.tsv: key = Protein in col 6
@@ -119,5 +121,11 @@ NR==FNR {
     }
 }
 ' <(zcat e7.og_info_with_taxa.tsv.gz) ERR2019356.diamond.tsv | gzip > ERR2019356_eggnog_annotations.tsv.gz
+```
 
+That works well, so I can prepare the files for download
+
+```
+mv e7.og_info_with_taxa.tsv.gz eggnog7_20251223_master_search_table.tsv.gz
+mv eggnog7_proteins.dmnd eggnog7_20251223_proteins.dmnd
 ```
