@@ -103,19 +103,21 @@ diamond blastp \
 And then I'll merge it with my master table
 
 ```
-awk -F'\t' '
+awk -F'\t' -v OFS='\t' '
 NR==FNR {
-    # Diamond: sseqid = Proteinname, speichern Query und Stats
-    hits[$2] = $1 "\t" $3 "\t" $4 "\t" $5 "\t" $6
+    # og_taxa.tsv: key = Protein in col 6
+    prot[$6] = $0   # store annotation line for merging
     next
 }
 {
-    prot = $6
-    if (prot in hits) {
-        print hits[prot] "\t" $0 
+    key = $2   # Diamond sseqid
+    if (key in prot) {
+        # Only select Diamond columns 1,2,3,4,11,12 + append annotation
+        print $1, $2, $3, $4, $11, $12, prot[key]
     } else {
-        print $0 "\tNA\tNA\tNA\tNA\tNA"
+        print $1, $2, $3, $4, $11, $12, "NA"
     }
 }
-' ERR2019356.diamond.tsv e7.og_info_with_taxa.tsv > og_taxa_with_diamond_top1.tsv
+' <(zcat e7.og_info_with_taxa.tsv.gz) ERR2019356.diamond.tsv | gzip > ERR2019356_eggnog_annotations.tsv.gz
+
 ```
