@@ -79,53 +79,43 @@ NR==FNR {
     }
 }
 ' e7.taxid_info.tsv e7.og_info_kegg_go_long.tsv > e7.og_info_with_taxa.tsv
-```After the join, I will assign numeric hashed instead of protein names
-
-```
-import pandas as pd
-import hashlib
-
-# -------------------------
-# 1️⃣ Load the long OG TSV
-# -------------------------
-og_file = "e7.og_info_kegg_go_long_sorted.tsv"
-og_long = pd.read_csv(og_file, sep="\t", low_memory=False)
-
-# Adjust column names if needed
-# Suppose columns: og_id, id2, taxid_old, protein
-og_long.columns = ["og_id", "id2", "taxid_old", "protein"]
-
-# -------------------------
-# 2️⃣ Define hash function
-# -------------------------
-def hash_protein(name):
-    # Use md5, take first 16 hex digits → 64-bit integer
-    h = hashlib.md5(name.encode("utf-8")).hexdigest()
-    return int(h[:16], 16)
-
-# -------------------------
-# 3️⃣ Add protein_hash column to TSV
-# -------------------------
-og_long["protein_hash"] = og_long["protein"].apply(hash_protein)
-
-# Save the updated TSV
-og_long.to_csv("e7.og_info_kegg_go_long_hashed.tsv", sep="\t", index=False)
-
-# -------------------------
-# 4️⃣ Process FASTA file
-# -------------------------
-fasta_file = "e7.proteins.faa"
-hashed_fasta = "e7.proteins_hashed.faa"
-
-with open(fasta_file) as fin, open(hashed_fasta, "w") as fout:
-    for line in fin:
-        if line.startswith(">"):
-            prot_name = line[1:].strip().split()[0]  # remove >, take first token
-            prot_hash = hash_protein(prot_name)
-            fout.write(f">{prot_hash}\n")
-        else:
-            fout.write(line)
-
 ```
 
-This will later allow to search much faster.
+Then I do already a test annotation
+
+```
+cd /run/nvme/job_31023856/data
+module load diamond
+cp /scratch/project_2009831/eggnog_devel/eggnog7_proteins.dmnd .
+cp /scratch/project_2009831/eggnog_devel/e7.og_info_with_taxa.tsv .
+cp /scratch/project_2001829/RuminomicsHighLow/results/contig_annotate/prodigal/ERR2019356/ERR2019356.prodigal.fa  .
+
+diamond blastp \
+  -d eggnog7_proteins.dmnd \
+  -q ERR2019356.prodigal.fa \
+  -o ERR2019356.diamond.tsv \
+  --outfmt 6 \
+  --max-target-seqs 1   # nur 1 Treffer pro Query
+  --evalue 1e-5         # Filter, optional
+  -p 16
+```
+
+And then I'll merge it with my master table
+
+```
+awk -F'\t' '
+NR==FNR {
+    # Diamond: sseqid = Proteinname, speichern Query und Stats
+    hits[$2] = $1 "\t" $3 "\t" $4 "\t" $5 "\t" $6
+    next
+}
+{
+    prot = $6
+    if (prot in hits) {
+        print hits[prot] "\t" $0 
+    } else {
+        print $0 "\tNA\tNA\tNA\tNA\tNA"
+    }
+}
+' ERR2019356.diamond.tsv e7.og_info_with_taxa.tsv > og_taxa_with_diamond_top1.tsv
+```
