@@ -8,6 +8,10 @@ The annotator uses Diamond to search for matching proteins in the database. The 
 bundled with it, so Diamond needs to be installed already on the system. There are no other requirements. Also, the tool has not been tested with other
 versions of Diamond.
 
+* Linux / Mac
+
+The script makes mainly use of basic bash commands like awk and sed and consequently they need to be isntalled (as it is default on Linux and Mac)
+
 # Installation
 
 ## Tool installation
