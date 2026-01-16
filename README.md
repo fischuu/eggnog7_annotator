@@ -140,3 +140,4 @@ results/test.eggnog.tsv.gz
 * Make sure the Diamond database and EggNOG master table are **downloaded beforehand**.
 * The script automatically **creates the output directory** if it does not exist.
 * By default, the **intermediate Diamond TSV file is removed** to save space; use `--keep-diamond` to preserve it.
+* I am not affiliated to the eggNOG project, I just wrote this convenience wrapper for my own usage and share it
