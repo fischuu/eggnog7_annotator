@@ -11,7 +11,7 @@ KEEP_DIAMOND=0
 VERSION="0.1"
 
 ############################################
-# Help
+# Help & version
 ############################################
 usage() {
 cat << EOF
@@ -30,6 +30,8 @@ Optional arguments:
   -p INT    Number of threads (default: 1)
   --keep-diamond
             Keep intermediate Diamond TSV file
+  -v, --version
+            Print version information and exit
   -h        Show this help message and exit
 
 Output files:
@@ -48,10 +50,14 @@ Example:
 EOF
 }
 
+version() {
+    echo "$(basename "$0") version ${VERSION}"
+}
+
 ############################################
 # Argument parsing
 ############################################
-OPTS=$(getopt -o d:q:m:s:o:e:p:h --long keep-diamond -n "$(basename "$0")" -- "$@")
+OPTS=$(getopt -o d:q:m:s:o:e:p:hv -l keep-diamond,version -n "$(basename "$0")" -- "$@")
 if [ $? != 0 ]; then
     usage
     exit 1
@@ -68,6 +74,7 @@ while true; do
         -e) EVALUE="$2"; shift 2 ;;
         -p) THREADS="$2"; shift 2 ;;
         --keep-diamond) KEEP_DIAMOND=1; shift ;;
+        -v|--version) version; exit 0 ;;
         -h) usage; exit 0 ;;
         --) shift; break ;;
         *) echo "Unknown option $1"; usage; exit 1 ;;
@@ -119,13 +126,14 @@ EGGNOG_OUT="${OUTDIR}/${SAMPLE}.eggnog.tsv.gz"
 # Summary
 ############################################
 echo "========================================"
-echo "Sample:        $SAMPLE"
-echo "Diamond DB:    $DIAMOND_DB"
-echo "Query FASTA:   $QUERY_FASTA"
-echo "Master table:  $MASTER_TABLE"
-echo "Threads:       $THREADS"
-echo "E-value:       $EVALUE"
-echo "Output dir:    $OUTDIR"
+echo "Script version: $VERSION"
+echo "Sample:         $SAMPLE"
+echo "Diamond DB:     $DIAMOND_DB"
+echo "Query FASTA:    $QUERY_FASTA"
+echo "Master table:   $MASTER_TABLE"
+echo "Threads:        $THREADS"
+echo "E-value:        $EVALUE"
+echo "Output dir:     $OUTDIR"
 echo "========================================"
 
 ############################################
