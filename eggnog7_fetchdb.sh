@@ -7,6 +7,7 @@ set -euo pipefail
 # =========================
 BASE_URL="https://a3s.fi/eggnog7_annotator"
 DATE_TAG="20251223"
+VERSION="0.1"
 
 MASTER_TABLE="eggnog7_${DATE_TAG}_master_search_table.tsv.gz"
 PROTEIN_DB="eggnog7_${DATE_TAG}_proteins.dmnd"

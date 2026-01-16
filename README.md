@@ -17,7 +17,24 @@ The script makes mainly use of basic bash commands like awk and sed and conseque
 ## Tool installation
 Just download the `eggnog7_annotator.sh` script, either by cloning the entire repository or by direct download
 
+My suggestion is to clone it via git and then add the path to your PATH variable to have the commands system-wide available like this
 
+```
+# Go to home folder
+cd
+
+# Change to the git repos
+mkdir -p git
+cd git
+
+# clone it to the folder
+git clone https://github.com/fischuu/eggnog7_annotator.git
+
+# Export it to make the command system-wide available
+export PATH="/users/fischerd/git/eggnog7_annotator:$PATH"
+```
+
+(Obviously, you need to adjust the first path `/users/fischerd/` to the folder to where you cloned repository)
 
 ## Fetching the databases
 
@@ -44,7 +61,10 @@ md5sum -c test.fa.md5
 ```
 
 ### Download via wrapper
-<t.b.a.>
+```
+cd /path/where/the/databases/should/be/fetched
+eggnog7_fetchdb.sh
+```
 
 # Usage
 

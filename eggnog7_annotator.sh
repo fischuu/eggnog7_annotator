@@ -8,6 +8,7 @@ EVALUE="1e-5"
 THREADS=1
 OUTDIR="."
 KEEP_DIAMOND=0
+VERSION="0.1"
 
 ############################################
 # Help
