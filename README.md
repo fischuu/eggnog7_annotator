@@ -32,6 +32,11 @@ md5sum -c eggnog7_20251223_master_search_table.tsv.gz.md5
 wget https://a3s.fi/eggnog7_annotator/eggnog7_20251223_proteins.dmnd
 wget https://a3s.fi/eggnog7_annotator/eggnog7_20251223_proteins.dmnd.md5
 md5sum -c eggnog7_20251223_proteins.dmnd.md5
+
+# Optional: test data
+wget https://a3s.fi/eggnog7_annotator/test.fa
+wget https://a3s.fi/eggnog7_annotator/test.fa.md5
+md5sum -c test.fa.md5
 ```
 
 ### Download via wrapper
@@ -51,7 +56,7 @@ All outputs are organized using a **sample prefix** and an **output directory**.
 ## Basic usage
 
 ```bash
-./run_diamond_eggnog.sh [OPTIONS]
+./eggnog7_annotator.sh [OPTIONS]
 ```
 
 ### Required Arguments
@@ -89,13 +94,13 @@ All output files are written to `<outdir>` and use the sample prefix `<sample>`:
 ## Example
 
 ```bash
-./run_diamond_eggnog.sh \
-  -d /data/db/eggnog7_20251223_proteins.dmnd \
+./eggnog7_annotator.sh \
+  -d eggnog7_20251223_proteins.dmnd \
   -q test.fa \
-  -m /data/db/eggnog7_20251223_master_search_table.tsv.gz \
+  -m eggnog7_20251223_master_search_table.tsv.gz \
   -s test \
   -o results \
-  -p 1
+  -p 16
 ```
 
 After running, the final combined annotation is available at:
