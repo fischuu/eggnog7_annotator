@@ -147,6 +147,6 @@ If you are searching a worry-free MetaG snakemake pipeline, please have a look a
 https://github.com/fischuu/Pipeline-Holoruminant-Meta
 
 ## References
-The Eggnog7 database is published here
+The Eggnog7 database, upon which these scripts and datatables are based on, is published here
 
 Ana Hernández-Plaza, Ziqi Deng, Fabian Robledo-Yagüe, Damian Szklarczyk, Christian von Mering, Peer Bork, Jaime Huerta-Cepas, eggNOG v7: phylogeny-based orthology predictions and functional annotations, Nucleic Acids Research, Volume 54, Issue D1, 6 January 2026, Pages D402–D408, https://doi.org/10.1093/nar/gkaf1249
