@@ -141,3 +141,7 @@ results/test.eggnog.tsv.gz
 * The script automatically **creates the output directory** if it does not exist.
 * By default, the **intermediate Diamond TSV file is removed** to save space; use `--keep-diamond` to preserve it.
 * I am not affiliated to the eggNOG project, I just wrote this convenience wrapper for my own usage and share it
+
+If you are searching a worry-free MetaG snakemake pipeline, please have a look at
+
+https://github.com/fischuu/Pipeline-Holoruminant-Meta
