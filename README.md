@@ -69,7 +69,7 @@ eggnog7_fetchdb.sh
 ### Alternative download server
 Apparently, there was some trouble downloading the data from the primary server. A secondary download mirror for the database files is located here
 
-https://doi.org/10.5281/zenodo.18514296)
+https://doi.org/10.5281/zenodo.18514296
 
 # Usage
 
